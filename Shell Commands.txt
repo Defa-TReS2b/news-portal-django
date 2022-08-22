@@ -1,0 +1,48 @@
+from random import randint
+from news.models import *
+
+user1 = User.objects.create_user(username='user1')
+user2 = User.objects.create_user(username='user2')
+
+user1_au = Author.objects.create(user=user1)
+user2_au = Author.objects.create(user=user2)
+
+
+c_news = Category.objects.create(category_name ='Новости')
+c_it = Category.objects.create(category_name='Айти')
+c_hor = Category.objects.create(category_name='Ужасы')
+c_hit = Category.objects.create(category_name='Ужасы айти')
+
+p1 = Post.objects.create(author=user1_au, title='Заголовок 1 автора 1', text='Дорогие друзья, дальнейшее развитие различных форм деятельности играет важную роль в формировании ключевых компонентов планируемого обновления? Соображения высшего порядка, а также выбранный нами инновационный путь напрямую зависит от форм воздействия. Практический опыт показывает, что повышение уровня гражданского сознания в значительной степени обуславливает создание дальнейших направлений развитая системы массового участия?', state='NW')
+p2 = Post.objects.create(author=user1_au, title='Заголовок 2 автора 1', text='С другой стороны социально-экономическое развитие обеспечивает широкому кругу специалистов участие в формировании всесторонне сбалансированных нововведений? Повседневная практика показывает, что повышение уровня гражданского сознания влечет за собой процесс внедрения и модернизации направлений прогрессивного развития. ')
+p3 = Post.objects.create(author=user2_au, title='Заголовок 1 автора 2', text='С другой стороны повышение уровня гражданского сознания обеспечивает актуальность дальнейших направлений развитая системы массового участия. Равным образом рамки и место обучения кадров требует определения и уточнения ключевых компонентов планируемого обновления. Не следует, однако, забывать о том, что сложившаяся структура организации способствует повышению актуальности ключевых компонентов планируемого обновления.')
+p4 = Post.objects.create(author=user2_au, title='Заголовок 2 автора 2', text='Слышали историю про призрака в компьютере?')
+
+p1.category.add(c_news)
+p2.category.add(c_it, c_news)
+p3.category.add(c_hor)
+p4.category.add(c_it, c_hit)
+
+c1 = Comment.objects.create(author=user1, post=p1, text='Комментарий 1')
+c2 = Comment.objects.create(author=user2, post=p1, text='Коммент 2')
+c4 = Comment.objects.create(author=user1, post=p2, text='Коммент 3')
+c5 = Comment.objects.create(author=user1, post=p2, text='Коммент 4')
+c7 = Comment.objects.create(author=user2, post=p3, text='Коммент 5')
+c8 = Comment.objects.create(author=user1, post=p4, text='Коммент 6')
+c9 = Comment.objects.create(author=user2, post=p4, text='к7')
+
+for post in Post.objects.all():
+   post.like(randint(-5,5))
+
+for comment in Comment.objects.all():
+    comment.like(randint(-5,5))
+
+user1_au.update_rating()
+user2_au.update_rating()
+
+best_post = Post.objects.order_by('-rating').first()
+
+print(f"Время: {best_post.datetime}, автор: {best_post.author.user.username}, рейтинг: {best_post.rating}, заголовок: {best_post.title}, содержание: {best_post.preview()}")
+
+for comment in best_post.comment_set.all():
+    print(f"Время: {comment.datetime}, автор: {comment.author.username}, рейтинг: {comment.rating}, текст: {comment.text}")
