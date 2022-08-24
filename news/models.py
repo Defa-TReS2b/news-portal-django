@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -16,9 +17,15 @@ class Author(models.Model):
             self.rating += comment.rating
         self.save()
 
+    def __str__(self):
+        return f'{self.user}'
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=25, unique=True)
+
+    def __str__(self):
+        return f'{self.category_name}'
 
 
 class Post(models.Model):
@@ -48,6 +55,12 @@ class Post(models.Model):
     def dislike(self, a=1):
         self.rating -= a
         self.save()
+
+    def __str__(self):
+        return f'{self.title.title()}: {self.text[:30]}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):

@@ -1,0 +1,41 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+
+{% block content %}
+<br>
+<table align="center" bgcolor="AliceBlue" border="5" cellpadding="7" width="75%">
+    <tr><td> <h4> Title: {{ post.title|censor }} </h4> </td> </tr>
+    <tr><td><h4> Date of publication: {{ post.datetime|date:'d M Y' }} </h4></td></tr>
+    <tr><td> {{ post.text|censor }} </td></tr>
+</table>
+<br>
+<h3> Comments </h3>
+<br>
+<table align="center" bgcolor="LightBlue" border="1" cellpadding="7" width="75%">
+    {% for comment in post.comment_set.all %}
+        <tr><td> User: {{ comment.author }} </td>
+        <td> Comment: {{ comment.text }} </td>
+        <td> Rating: {{ comment.rating }} </td></tr>
+    {% endfor %}
+</table>
+
+<form action="{{post.id}}/edit/">
+   <button>Edit</button>
+  </form>
+
+
+
+<form action="{{post.id}}/delete/">
+   <button>Delete</button>
+  </form>
+
+
+
+
+{% endblock content %}
