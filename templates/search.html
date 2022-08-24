@@ -1,0 +1,64 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Search
+{% endblock title %}
+
+{% block content %}
+
+<br>
+<form action="" method="get">
+    {{ filterset.form.as_p }}
+    <label for="input_date">Choose news not earlier then:</label>
+    <input type="date" id="input_date" name="datetime__gt"/>
+    <input type="submit" value="Search"/>
+
+</form>
+
+{% if posts %}
+<br>
+<table align="center" bgcolor="AliceBlue" border="5" cellpadding="7" width="75%">
+    <h4> Number of news: {{posts|length}} </h4>
+    <h4>{{ time_now|date:'d M Y' }}</h4>
+    <br>
+    <caption> All news in order from old to new</caption>
+    <tr>
+        <td>Title</td>
+        <td>Date of publication</td>
+        <td>Description</td>
+    </tr>
+    {% for post in posts %}
+    <tr>
+        <td><a href="{% url 'post_detail' post.id %}">{{post.title|censor}}</a></td>
+        <td>{{post.datetime|date:'d M Y'}}</td>
+        <td>{{post.text|truncatechars:20|censor}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<br>
+<h1>There is no news!</h1>
+{% endif %}
+
+{% if page_obj.has_previous %}
+<a href="?{% url_replace page=1%}">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% endif %}
+
+{{ page_obj.number }}
+
+{% if page_obj.has_next %}
+<a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+
+{% endblock content %}
