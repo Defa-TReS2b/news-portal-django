@@ -1,5 +1,6 @@
+import django_filters
 from django_filters import FilterSet, ModelChoiceFilter, CharFilter
-from .models import Post, Category
+from .models import Post, Category, PostCategory
 
 
 class PostFilter(FilterSet):
@@ -18,3 +19,8 @@ class PostFilter(FilterSet):
             'state': ['exact'],
             'datetime': ['gt'],
         }
+
+class PostCategoryFilter(django_filters.FilterSet):
+    class Meta:
+        model = PostCategory
+        fields = ['category']
