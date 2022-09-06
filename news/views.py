@@ -1,10 +1,11 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
+from .models import Post, SubscribersCategory
 from datetime import datetime
 from .filters import PostFilter
-from .forms import PostForm
+from .forms import PostForm, SubscribeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -71,3 +72,14 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'delete.html'
     success_url = reverse_lazy('post_list')
+
+class SubscriberView(LoginRequiredMixin, CreateView):
+    model = SubscribersCategory
+    form_class = SubscribeForm
+    template_name = 'subscribe.html'
+    success_url = reverse_lazy('post_list')
+
+    def form_valid(self, form):
+        subscribe = form.save(commit=False)
+        subscribe.subscriber = User.objects.get(pk=self.request.user.id)
+        return super(SubscriberView, self).form_valid(form)
