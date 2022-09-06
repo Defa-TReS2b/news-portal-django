@@ -23,6 +23,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=25, unique=True)
+    subscribers = models.ManyToManyField(User, through='SubscribersCategory')
 
     def __str__(self):
         return f'{self.category_name}'
@@ -82,3 +83,10 @@ class Comment(models.Model):
     def dislike(self, a=1):
         self.rating -= a
         self.save()
+
+class SubscribersCategory(models.Model):
+    subscriber = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.category}: {self.subscriber}'
