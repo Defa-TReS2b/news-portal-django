@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save, m2m_changed
-from django.core.mail import send_mail, EmailMultiAlternatives
-from .models import Post, SubscribersCategory, PostCategory
+from django.core.mail import send_mail
+from .models import Post, SubscribersCategory
 from django.dispatch import receiver
 from .tasks import notify_subscribers
 
@@ -10,7 +10,7 @@ def notify_user_subscribe(sender, instance, created, **kwargs):
     subject = f'Subscribed!'
     send_mail(
         subject=subject,
-        message=f'Succsessfuly subscrabed to {instance.category.name}',
+        message=f'Successfully subscrabed to {instance.category.name}',
         from_email='newsportal@mail.ru',
         recipient_list=[f'{instance.subscriber.email}'],
     )
